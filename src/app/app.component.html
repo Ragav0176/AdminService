@@ -1,0 +1,159 @@
+<div class="container-fluid bg-light p-5">
+  <form #adminForm="ngForm" (ngSubmit)="register(adminForm)" class="p-4 bg-white border rounded shadow-sm">
+    <h4 class="display-6 text-center py-2 text-success">Admin Registration</h4>
+    
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input id="username" required #username="ngModel" ngModel name="username" type="text"
+             class="form-control" placeholder="Enter username">
+      <div *ngIf="username.invalid && username.touched">
+        <small class="text-danger" *ngIf="username.errors?.['required']">Required</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input id="password" required #password="ngModel" ngModel name="password" type="password"
+             class="form-control" placeholder="Enter password">
+      <div *ngIf="password.invalid && password.touched">
+        <small class="text-danger" *ngIf="password.errors?.['required']">Required</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input id="email" required #email="ngModel" ngModel name="email" type="email"
+             class="form-control" placeholder="Enter email">
+      <div *ngIf="email.invalid && email.touched">
+        <small class="text-danger" *ngIf="email.errors?.['required']">Required</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="loginAttempts" class="form-label">Login Attempts</label>
+      <input id="loginAttempts" required #loginAttempts="ngModel" ngModel name="loginAttempts" type="number"
+             class="form-control" placeholder="Enter login attempts">
+      <div *ngIf="loginAttempts.invalid && loginAttempts.touched">
+        <small class="text-danger" *ngIf="loginAttempts.errors?.['required']">Required</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="isActive" class="form-label">Is Active</label>
+      <select id="isActive" required #isActive="ngModel" ngModel name="isActive" class="form-select">
+        <option [ngValue]="true">Yes</option>
+        <option [ngValue]="false">No</option>
+      </select>
+      <div *ngIf="isActive.invalid && isActive.touched">
+        <small class="text-danger" *ngIf="isActive.errors?.['required']">Required</small>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <input class="btn btn-success btn-lg" type="submit" value="Submit">
+    </div>
+  </form>
+
+  <!-- Admin Table -->
+  <div class="mt-5">
+    <h4 class="text-center text-primary">Admin Details</h4>
+    <table class="table table-bordered table-striped table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Login Attempts</th>
+          <th>Is Active</th>
+          <th>Last Login Time</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let admin of adminDetails">
+          <td>{{admin.id}}</td>
+          <td>{{admin.username}}</td>
+          <td>{{admin.email}}</td>
+          <td>{{admin.loginAttempts}}</td>
+          <td>{{admin.isActive ? 'Yes' : 'No'}}</td>
+          <td>{{admin.lastLoginTime ? (admin.lastLoginTime | date:'short') : 'N/A'}}</td>
+          <td>
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="edit(admin)">Edit</button>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger" (click)="deleteAdmin(admin)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Update Admin</h1>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form #updateForm="ngForm" (ngSubmit)="updateAdmin()">
+            <h4 class="display-6 text-center py-2">Update Admin</h4>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input id="username" required #username="ngModel" [(ngModel)]="adminToUpdate.username" name="username" type="text"
+                class="form-control" placeholder="Enter username">
+              <div *ngIf="username.invalid && username.touched">
+                <small class="text-danger" *ngIf="username.errors?.['required']">Required</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input id="password" required #password="ngModel" [(ngModel)]="adminToUpdate.password" name="password" type="password"
+                class="form-control" placeholder="Enter password">
+              <div *ngIf="password.invalid && password.touched">
+                <small class="text-danger" *ngIf="password.errors?.['required']">Required</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input id="email" required #email="ngModel" [(ngModel)]="adminToUpdate.email" name="email" type="email"
+                class="form-control" placeholder="Enter email">
+              <div *ngIf="email.invalid && email.touched">
+                <small class="text-danger" *ngIf="email.errors?.['required']">Required</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="loginAttempts" class="form-label">Login Attempts</label>
+              <input id="loginAttempts" required #loginAttempts="ngModel" [(ngModel)]="adminToUpdate.loginAttempts" name="loginAttempts" type="number"
+                class="form-control" placeholder="Enter login attempts">
+              <div *ngIf="loginAttempts.invalid && loginAttempts.touched">
+                <small class="text-danger" *ngIf="loginAttempts.errors?.['required']">Required</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="isActive" class="form-label">Is Active</label>
+              <select id="isActive" required #isActive="ngModel" [(ngModel)]="adminToUpdate.isActive" name="isActive" class="form-select">
+                <option [ngValue]="true">Yes</option>
+                <option [ngValue]="false">No</option>
+              </select>
+              <div *ngIf="isActive.invalid && isActive.touched">
+                <small class="text-danger" *ngIf="isActive.errors?.['required']">Required</small>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <input class="btn btn-warning btn-lg" type="submit" value="Update">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
